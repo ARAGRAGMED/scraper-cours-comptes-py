@@ -47,7 +47,7 @@ class CourtAccountsService:
         """Refresh publications data from JSON file"""
         self._load_existing_data()
 
-    async def start_scraping(self, request: ScrapingRequest) -> ScrapingResponse:
+    async def start_scraping(self, request) -> ScrapingResponse:
         """Start scraping with the given parameters"""
         if self.is_running:
             return ScrapingResponse(
@@ -59,14 +59,37 @@ class CourtAccountsService:
             self.is_running = True
             start_time = time.time()
             
+            # Handle both ScrapingRequest objects and dictionaries
+            if hasattr(request, 'force_rescrape'):
+                # It's a ScrapingRequest object
+                force_rescrape = request.force_rescrape
+                max_pages = request.max_pages
+            elif isinstance(request, dict):
+                # It's a dictionary
+                force_rescrape = request.get('force_rescrape', False)
+                max_pages = request.get('max_pages', 10)
+            else:
+                # Fallback to defaults
+                force_rescrape = False
+                max_pages = 10
+            
+            print(f"🔧 Scraping parameters: force_rescrape={force_rescrape}, max_pages={max_pages}")
+            
             # Create scraper instance
+            # Fix the config file path to use absolute path
+            project_root = Path(__file__).parent.parent.parent
+            config_file = str(project_root / "config" / "scraper_config.json")
+            
+            print(f"🔧 Using config file: {config_file}")
+            
             self.scraper = CourtOfAccountsScraper(
-                force_rescrape=request.force_rescrape
+                force_rescrape=force_rescrape,
+                config_file=config_file
             )
             
             # Run the scraper
             success = self.scraper.run(
-                max_pages=request.max_pages
+                max_pages=max_pages
             )
             
             execution_time = time.time() - start_time

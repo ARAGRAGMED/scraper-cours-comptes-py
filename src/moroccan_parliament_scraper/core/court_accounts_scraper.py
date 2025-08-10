@@ -13,6 +13,7 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse, parse_qs
 from ..utils.config_manager import ConfigManager
+from pathlib import Path
 
 class CourtOfAccountsScraper:
     """Enhanced scraper for Court of Accounts publications with configuration management and proxy support"""
@@ -526,12 +527,34 @@ class CourtOfAccountsScraper:
             self._log("❌ No results to save", "progress")
             return False
         
+        # Try to find the correct data directory path
+        current_dir = Path(__file__).parent
+        possible_data_paths = [
+            current_dir.parent.parent.parent / "data",  # From src/moroccan_parliament_scraper/core to project root
+            current_dir.parent.parent / "data",         # From src/moroccan_parliament_scraper to project root
+            Path("data"),                               # Current working directory
+            Path("../data"),                            # Parent directory
+            Path("../../data")                          # Grandparent directory
+        ]
+        
+        data_dir = None
+        for path in possible_data_paths:
+            if path.exists() or path.parent.exists():
+                data_dir = path
+                break
+        
+        if not data_dir:
+            # Create data directory in current working directory as fallback
+            data_dir = Path("data")
+        
         # Create data directory if it doesn't exist
-        os.makedirs("data", exist_ok=True)
+        os.makedirs(data_dir, exist_ok=True)
         
         if not filename:
             current_year = datetime.now().year
-            filename = f"data/court-accounts-publications-{current_year}.json"
+            filename = data_dir / f"court-accounts-publications-{current_year}.json"
+        else:
+            filename = data_dir / filename
         
         # Prepare output data structure
         output_data = {
@@ -620,17 +643,28 @@ class CourtOfAccountsScraper:
     def _check_existing_data(self):
         """Check if data already exists"""
         current_year = datetime.now().year
-        filename = f"data/court-accounts-publications-{current_year}.json"
         
-        if not os.path.exists(filename):
-            return 0
+        # Try multiple possible paths for the data file
+        possible_paths = [
+            f"data/court-accounts-publications-{current_year}.json",
+            f"../data/court-accounts-publications-{current_year}.json",
+            f"../../data/court-accounts-publications-{current_year}.json"
+        ]
         
-        try:
-            with open(filename, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-                return data.get('total_items', 0)
-        except Exception as e:
-            if self.enable_logs:
-                self._log(f"⚠️  Error checking existing data: {e}", "progress")
+        for filename in possible_paths:
+            if os.path.exists(filename):
+                try:
+                    with open(filename, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                        count = data.get('total_items', 0)
+                        if self.enable_logs:
+                            self._log(f"✅ Found existing data file: {filename} with {count} items", "progress")
+                        return count
+                except Exception as e:
+                    if self.enable_logs:
+                        self._log(f"⚠️  Error reading existing data file {filename}: {e}", "progress")
+                    continue
         
+        if self.enable_logs:
+            self._log("📭 No existing data file found", "progress")
         return 0
