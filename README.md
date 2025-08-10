@@ -1,484 +1,399 @@
-# 🏛️ Moroccan Parliament Legislation Scraper
+# 🏛️ Moroccan Court of Accounts Scraper
 
-A comprehensive, configurable web scraper for extracting current year legislation data from the Moroccan Parliament website with precise source identification for both commissions and ministries.
+A comprehensive web scraper and API for extracting publications data from the Moroccan Court of Accounts website. Features a modern web interface, real-time scraping capabilities, and a robust FastAPI backend.
 
 ## ✨ Features
 
-- **📋 Current Year Focus**: Automatically identifies and scrapes current legislative year data
-- **🎯 Source Identification**: Precisely identifies commission and ministry sources for each legislation
-- **🔄 Duplicate Prevention**: Intelligent duplicate checking to avoid re-scraping existing data
-- **⚙️ Configuration System**: Flexible configuration management with JSON-based settings
-- **🌐 Proxy Support**: Built-in proxy rotation and management
-- **📝 Granular Logging**: Configurable logging levels and types
-- **🛡️ Error Handling**: Robust error handling with retry mechanisms
-- **📊 Structured Data**: Comprehensive data extraction with legislative process details
-- **🎭 Lecture Stage Detection**: Automatic detection and handling of Lecture 1 vs Lecture 2 items
-- **📄 PDF Link Extraction**: Extracts PDF links without downloading files
-- **📋 Rapport Section**: Enhanced extraction of rapport sections for Lecture 2 items with improved HTML parsing
-- **🎨 Dynamic Web Viewer**: Interactive, responsive web interface with real-time data loading
-- **📄 Enhanced PDF Visibility**: Prominent, contextual PDF download buttons with visual indicators
-- **📦 Package Structure**: Professional Python package organization
-- **🚀 Multiple Entry Points**: Flexible execution options
+- **🌐 Live Web Scraping**: Real-time scraping of Court of Accounts publications
+- **🚀 FastAPI Backend**: Modern, fast REST API with automatic documentation
+- **🎨 Modern Web Interface**: Beautiful, responsive frontend with real-time data updates
+- **📊 Dynamic Data Loading**: Publications loaded from JSON files with live updates
+- **🔍 Category Filtering**: Filter publications by category with real-time search
+- **⚙️ Configurable Scraping**: Customizable max pages and force re-scrape options
+- **📱 Responsive Design**: Works perfectly on desktop and mobile devices
+- **🔄 Real-time Status**: Live scraping status and progress monitoring
+- **📄 Publication Details**: Comprehensive publication information extraction
+- **🌍 CORS Enabled**: Ready for cross-origin requests and integration
 
 ## 🚀 Quick Start
 
-### Method 1: Using the Package Entry Point
-
+### 1. Clone the Repository
 ```bash
-# Run from project root
-python3 run_scraper.py
+git clone https://github.com/ARAGRAGMED/scraper-cours-comptes-py.git
+cd scrap-cour-des-comptes-scraper
 ```
 
-### Method 2: Using Python Module
-
+### 2. Install Dependencies
 ```bash
-# Run as a module
-python3 -m src.moroccan_parliament_scraper
+pip install -r requirements.txt
 ```
 
-### Method 3: Using Console Script (after installation)
-
+### 3. Run Locally
 ```bash
-# Install the package
-pip install -e .
-
-# Run using console script
-moroccan-scraper
+# From project root directory
+uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### Method 4: Programmatic Usage
+### 4. Access the Application
+- **Frontend**: http://localhost:8000
+- **API Documentation**: http://localhost:8000/docs
+- **API Info**: http://localhost:8000/api
 
-```python
-from src.moroccan_parliament_scraper import MoroccanParliamentScraper
+## 🌐 Live Demo
 
-# Create scraper instance (uses config settings)
-scraper = MoroccanParliamentScraper()
+**Production URL**: https://scrap-cour-des-comptes-scraper.vercel.app
 
-# Run the scraper
-success = scraper.run()
+## 🏗️ Architecture
+
+### Backend (FastAPI)
+- **API Routes**: `/api/court-accounts/*` endpoints
+- **Scraping Service**: `CourtAccountsService` for web scraping operations
+- **Data Management**: JSON file-based data storage and retrieval
+- **CORS Support**: Cross-origin request handling
+
+### Frontend (HTML/CSS/JavaScript)
+- **Modern UI**: Clean, professional interface design
+- **Real-time Updates**: Dynamic data loading and status updates
+- **Responsive Layout**: Mobile-first design approach
+- **Interactive Controls**: Scraping controls and category filtering
+
+### Data Flow
+1. **User Interface** → Frontend JavaScript
+2. **API Calls** → FastAPI Backend
+3. **Scraping Service** → Court of Accounts Website
+4. **Data Storage** → JSON File
+5. **Data Retrieval** → Frontend Display
+
+## 📡 API Endpoints
+
+### Core Endpoints
+- `GET /` - Main application page
+- `GET /docs` - Interactive API documentation (Swagger UI)
+- `GET /redoc` - Alternative API documentation
+- `GET /openapi.json` - OpenAPI specification
+- `GET /health` - Health check endpoint
+- `GET /test` - Test endpoint
+- `GET /api` - API information and available endpoints
+
+### Court Accounts API
+- `GET /api/court-accounts/publications` - Get all publications
+- `GET /api/court-accounts/publications?category={category}` - Filter by category
+- `GET /api/court-accounts/publications?year={year}` - Filter by year
+- `GET /api/court-accounts/categories` - Get available categories
+- `POST /api/court-accounts/scrape` - Start live scraping
+- `GET /api/court-accounts/status` - Get scraping status
+
+### Query Parameters
+- `category`: Filter publications by category
+- `year`: Filter publications by year
+- `max_pages`: Maximum pages to scrape (POST request)
+- `force_rescrape`: Force re-scraping even if data exists (POST request)
+
+## 🎯 Usage Examples
+
+### Start Scraping
+```javascript
+// Frontend JavaScript
+const response = await fetch('/api/court-accounts/scrape', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        max_pages: 10,
+        force_rescrape: true
+    })
+});
+
+const result = await response.json();
+console.log(result.message); // "Scraping completed! Found X publications."
 ```
 
-## ⚙️ Configuration System
-
-The scraper uses a comprehensive configuration system managed through `config/scraper_config.json`:
-
-### 📋 Configuration Structure
-
-```json
-{
-  "scraper_settings": {
-    "force_rescrape": false,
-    "enable_logs": true,
-    "save_format": "json"
-  },
-  "proxy_settings": {
-    "enable_proxies": false,
-    "proxies": [
-      {
-        "http": "http://proxy1.example.com:8080",
-        "https": "http://proxy1.example.com:8080"
-      }
-    ],
-    "proxy_rotation": true,
-    "proxy_timeout": 10  # Timeout for proxy requests (seconds)
-  },
-  "request_settings": {
-    "timeout": 30,
-    "retry_attempts": 3,
-    "delay_between_requests": 2,
-    "user_agent": "Mozilla/5.0..."
-  },
-      "logging_settings": {
-      "log_level": "INFO",  # DEBUG, INFO, WARNING, ERROR, CRITICAL
-      "show_progress": true,
-      "show_detailed_extraction": true,
-      "show_commission_checks": true,
-      "show_ministry_checks": true
-    }
-}
+### Get Publications by Category
+```javascript
+// Get publications in "Rapport" category
+const response = await fetch('/api/court-accounts/publications?category=Rapport');
+const data = await response.json();
+console.log(`Found ${data.count} publications`);
 ```
 
-### 🔧 Configuration Management
-
-```python
-from src.moroccan_parliament_scraper import ConfigManager
-
-# Load configuration
-config = ConfigManager()
-
-# Update settings
-config.set_force_rescrape(True)
-config.enable_proxies(True)
-config.set('logging_settings.show_detailed_extraction', False)
-
-# View current configuration
-config.print_config_summary()
-```
-
-### 🌐 Proxy Configuration
-
-```python
-# Add custom proxies
-proxies = [
-    {"http": "http://proxy1.company.com:8080", "https": "http://proxy1.company.com:8080"},
-    {"http": "http://proxy2.company.com:8080", "https": "http://proxy2.company.com:8080"}
-]
-config.update_proxies(proxies)
-config.enable_proxies(True)
-```
-
-### 📝 Logging Configuration
-
-```python
-# Disable specific log types
-config.set('logging_settings.show_commission_checks', False)
-config.set('logging_settings.show_ministry_checks', False)
-
-# Disable all logs
-config.enable_logs(False)
+### Filter by Year
+```javascript
+// Get publications from 2025
+const response = await fetch('/api/court-accounts/publications?year=2025');
+const data = await response.json();
+console.log(`Found ${data.count} publications from 2025`);
 ```
 
 ## 📊 Data Structure
 
-### Main Legislation Record
-
+### Publication Object
 ```json
 {
-  "title": "Projet de loi N°03.25 relatif aux Organismes de Placement Collectif en Valeurs Mobilières",
-  "law_number": "03.25",
-  "url": "https://www.chambredesrepresentants.ma/fr/...",
-  "stage": "Lecture 2",
-  "commission": "Commission des finances et du développement économique",
-  "commission_id": "64",
-  "ministry": "To be identified",
-  "ministry_id": "To be identified",
-  "pdf_url": "https://www.chambredesrepresentants.ma/sites/default/files/...",
-  "pdf_filename": "projet_loi_03_25.pdf",
-  "scraped_at": "2025-01-15T10:30:00",
-  "page": 1,
-  "premiere_lecture": {
-    "bureau_de_la_chambre": {
-      "texte_source": "Gouvernement",
-      "date_depot": "Lundi 7 juillet 2025",
-      "texte_depose": "Le texte tel qu'il a été déposé au Bureau de la Chambre",
-      "pdf_link": "https://..."
-    },
-    "commission": {
-      "commission_name": "Commission des finances et du développement économique",
-      "submission_date": "Mercredi 16 avril 2025"
-    }
-  },
-  "deuxieme_lecture": {
-    "transfer_date": "Mercredi 23 juillet 2025",
-    "commission": {
-      "commission_name": "Commission des finances et du développement économique",
-      "submission_date": "Vendredi 25 juillet 2025"
-    },
-    "rapport_section": {
-      "section_title": "Rapport de la commission permanente - première lecture",
-      "files": [
-        {
-          "title": "Rapport de la commission",
-          "pdf_url": "https://...",
-          "filename": "rapport_commission.pdf",
-          "size": "2.5 MB"
-        }
-      ]
-    }
+  "id": "unique_identifier",
+  "title": "Publication Title",
+  "category": "Rapport",
+  "year": 2025,
+  "url": "https://courdescomptes.ma/...",
+  "scraped_at": "2025-01-15T10:30:00Z"
+}
+```
+
+### API Response Format
+```json
+{
+  "success": true,
+  "publications": [...],
+  "count": 2,
+  "message": "Data retrieved successfully"
+}
+```
+
+### Scraping Response
+```json
+{
+  "success": true,
+  "message": "Scraping completed! Found 2 publications.",
+  "publications_count": 2,
+  "details": {
+    "status": "completed"
   }
 }
 ```
 
-## 🎯 Current Results
+## 🛠️ Development
 
-- **✅ 100% Success Rate**: Commission extraction working perfectly
-- **✅ 100% Success Rate**: Stage detection (Lecture 1 vs Lecture 2)
-- **✅ Enhanced Data Structure**: Organized by legislative stages
-- **✅ Fixed Rapport Section Extraction**: Improved HTML parsing for H3 tags with section-title class
-- **✅ Dynamic Web Interface**: Real-time data loading with enhanced PDF visibility
-- **✅ Duplicate Prevention**: Intelligent skipping of existing data and duplicate file detection
-- **✅ Force Re-scraping**: Option to override duplicate checking
-- **✅ Organized File Structure**: All data saved in `data/` folder
-- **✅ Contextual PDF Organization**: Download buttons placed exactly where relevant
+### Project Structure
+```
+scrap-cour-des-comptes-scraper/
+├── 📁 api/
+│   ├── main.py                    # FastAPI application entry point
+│   └── routes/
+│       └── court_accounts.py      # API endpoints
+├── 📁 app/
+│   ├── api/                       # Original API structure
+│   ├── core/                      # Configuration and security
+│   ├── models/                    # Pydantic models
+│   ├── services/                  # Business logic services
+│   └── main.py                    # Original main application
+├── 📁 public/                     # Frontend assets
+│   ├── css/
+│   │   └── styles.css            # Application styles
+│   ├── js/
+│   │   └── app.js                # Frontend JavaScript
+│   └── index.html                # Main HTML page
+├── 📁 data/                       # Data storage
+│   └── court-accounts-publications-2025.json
+├── 📁 src/                        # Core scraper logic
+├── requirements.txt               # Python dependencies
+├── vercel.json                   # Vercel deployment configuration
+└── README.md                     # This file
+```
 
-## 🌐 Dynamic Web Viewer
-
-A beautiful, modern web interface to explore the scraped legislation data with real-time data loading and enhanced user experience:
-
-### 🚀 Quick Start
+### Local Development
 ```bash
-# Method 1: Auto-server (Recommended)
-python3 serve_web_viewer.py
+# 1. Activate virtual environment
+source venv/bin/activate  # On macOS/Linux
+# or
+venv\Scripts\activate     # On Windows
 
-# Method 2: Static dynamic viewer (Recommended for production)
-python3 -m http.server 8080
-# Then go to http://localhost:8080/static_web_viewer.html
+# 2. Install dependencies
+pip install -r requirements.txt
 
-# Method 3: Legacy static version
-python3 generate_static_viewer.py
-# Then open generated file in browser
+# 3. Run the application
+uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
+
+# 4. Access the application
+open http://localhost:8000
 ```
 
-### ✨ Enhanced Features
-- **🔄 Dynamic Data Loading**: Real-time loading from JSON files without page refresh
-- **📊 Live Statistics**: Real-time stats with rapport section counts
-- **🎨 Minimal Modern Design**: Clean, professional interface with subtle visual elements
-- **📄 Prominent PDF Buttons**: Red-highlighted download buttons for maximum visibility
-- **🔍 Advanced Search & Filtering**: By stage, commission, text search with instant results
-- **📋 Contextual PDF Placement**: Download buttons appear exactly where relevant
-- **🏛️ Rapport Section Display**: Enhanced display of commission reports with file listings
-- **🔄 Data Source Control**: Switch between different data files and refresh data
-- **🛠️ Debug Tools**: Built-in browser console debugging for troubleshooting
-- **📱 Fully Responsive**: Perfect mobile and desktop experience
-
-### 📊 Key Improvements
-- **Dynamic Loading**: No more embedded data - loads from JSON files dynamically
-- **PDF Visibility**: Bright red PDF buttons that stand out immediately
-- **Contextual Organization**: PDF buttons appear in metadata and stage sections only
-- **Real-time Updates**: Shows rapport section counts and last update time
-- **Enhanced UX**: Smooth animations, hover effects, and visual feedback
-
-See [WEB_VIEWER_README.md](WEB_VIEWER_README.md) for detailed usage instructions.
-
-## 🔧 Technical Features
-
-### Configuration Management
-- **JSON-based Configuration**: Easy to modify and version control
-- **Default Fallbacks**: Graceful handling of missing configuration
-- **Runtime Updates**: Change settings without restarting
-- **Validation**: Automatic configuration validation
-
-### Proxy Support
-- **Multiple Proxy Support**: Rotate through multiple proxy servers
-- **Automatic Rotation**: Switch proxies on failures
-- **Timeout Management**: Configurable proxy timeouts
-- **Fallback Handling**: Graceful fallback to direct connection
-
-### Logging System
-- **Granular Control**: Enable/disable specific log types
-- **Progress Tracking**: Clear progress indicators
-- **Error Reporting**: Detailed error messages
-- **Performance Monitoring**: Request timing and retry information
-
-### Request Management
-- **Retry Logic**: Automatic retry on failures
-- **Timeout Control**: Configurable request timeouts
-- **Rate Limiting**: Respectful delays between requests
-- **Session Management**: Persistent connections
-
-### Package Structure
-- **Modular Design**: Clean separation of concerns
-- **Multiple Entry Points**: Flexible execution options
-- **Installation Support**: Proper Python package structure
-- **Import Management**: Clean import paths
-
-## 📁 Project Structure
-
-```
-moroccan-parliament-scraper/
-├── 📁 config/
-│   └── scraper_config.json          # Configuration file
-├── 📁 data/
-│   └── extracted-data-2025.json     # Extracted data (organized)
-├── 📁 src/
-│   └── moroccan_parliament_scraper/
-│       ├── __init__.py              # Package initialization
-│       ├── __main__.py              # Module entry point
-│       ├── 📁 core/
-│       │   ├── __init__.py
-│       │   └── legislation_scraper.py # Main scraper implementation
-│       ├── 📁 utils/
-│       │   ├── __init__.py
-│       │   └── config_manager.py    # Configuration management
-│       └── 📁 examples/
-│           ├── __init__.py
-│           ├── config_examples.py   # Configuration usage examples
-│           └── rapport_examples.py  # Rapport data access examples
-├── web_viewer.html                  # Legacy web interface
-├── static_web_viewer.html           # Dynamic web viewer (recommended)
-├── serve_web_viewer.py              # Auto-server for web viewer
-├── generate_static_viewer.py        # Static viewer generator
-├── run_scraper.py                   # Root-level entry point
-├── setup.py                         # Package installation
-├── requirements.txt                 # Python dependencies
-├── README.md                        # This file
-├── WEB_VIEWER_README.md             # Web viewer documentation
-├── PROJECT_STRUCTURE.md             # Detailed structure guide
-└── .gitignore                       # Git ignore rules
-```
-
-## 🛠️ Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd moroccan-parliament-scraper
-   ```
-
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Install the package** (optional, for console script access)
-   ```bash
-   pip install -e .
-   ```
-
-4. **Configure settings** (optional)
-   ```bash
-   # Edit config/scraper_config.json to customize settings
-   nano config/scraper_config.json
-   ```
-
-5. **Run the scraper**
-   ```bash
-   # Method 1: Direct execution
-   python3 run_scraper.py
-   
-   # Method 2: Module execution
-   python3 -m src.moroccan_parliament_scraper
-   
-   # Method 3: Console script (if installed)
-   moroccan-scraper
-   ```
-
-## 📋 Usage Examples
-
-### Basic Scraping
-```python
-from src.moroccan_parliament_scraper import MoroccanParliamentScraper
-
-scraper = MoroccanParliamentScraper()
-success = scraper.run()
-```
-
-### Force Re-scraping
-```python
-# Method 1: Via constructor
-scraper = MoroccanParliamentScraper(force_rescrape=True)
-success = scraper.run()
-
-# Method 2: Via config
-from src.moroccan_parliament_scraper import ConfigManager
-config = ConfigManager()
-config.set_force_rescrape(True)
-scraper = MoroccanParliamentScraper()
-success = scraper.run()
-```
-
-### Custom Configuration
-```python
-from src.moroccan_parliament_scraper import ConfigManager
-
-# Update configuration
-config = ConfigManager()
-config.set('scraper_settings.max_pages', 5)
-config.set('request_settings.delay_between_requests', 1)
-config.set('logging_settings.show_commission_checks', False)
-
-# Run with updated config
-scraper = MoroccanParliamentScraper()
-success = scraper.run()
-```
-
-### Proxy Usage
-```python
-from src.moroccan_parliament_scraper import ConfigManager
-
-config = ConfigManager()
-
-# Add your proxies
-proxies = [
-    {"http": "http://your-proxy:8080", "https": "http://your-proxy:8080"}
-]
-config.update_proxies(proxies)
-config.enable_proxies(True)
-
-# Run with proxies
-scraper = MoroccanParliamentScraper()
-success = scraper.run()
-```
-
-## 🔍 Data Access Examples
-
-### Accessing Rapport Data
-```python
-import json
-
-# Load the extracted data
-with open('data/extracted-data-2025.json', 'r', encoding='utf-8') as f:
-    data = json.load(f)
-
-# Filter for Lecture 2 items with rapport sections
-lecture2_items = [
-    item for item in data['data'] 
-    if item.get('stage') == 'Lecture 2' and 
-    item.get('deuxieme_lecture', {}).get('rapport_section')
-]
-
-# Access rapport files
-for item in lecture2_items:
-    rapport = item['deuxieme_lecture']['rapport_section']
-    print(f"Law {item['law_number']}: {rapport['section_title']}")
-    
-    for file in rapport['files']:
-        print(f"  - {file['title']}: {file['pdf_url']}")
-```
-
-### Running Example Scripts
+### Testing the API
 ```bash
-# Run configuration examples
-python3 -m src.moroccan_parliament_scraper.examples.config_examples
+# Test health endpoint
+curl http://localhost:8000/health
 
-# Run rapport access examples
-python3 -m src.moroccan_parliament_scraper.examples.rapport_examples
+# Test publications endpoint
+curl http://localhost:8000/api/court-accounts/publications
+
+# Test scraping endpoint
+curl -X POST http://localhost:8000/api/court-accounts/scrape \
+  -H "Content-Type: application/json" \
+  -d '{"max_pages": 5, "force_rescrape": true}'
 ```
 
-## 🛡️ Ethical Scraping
+## 🚀 Deployment
 
-- **Respectful Delays**: Configurable delays between requests
+### Vercel Deployment
+The application is configured for automatic deployment on Vercel:
+
+1. **Automatic Deploy**: Push to `main` branch triggers deployment
+2. **Production URL**: https://scrap-cour-des-comptes-scraper.vercel.app
+3. **Configuration**: `vercel.json` handles routing and function configuration
+
+### Deployment Configuration
+```json
+{
+  "functions": {
+    "api/main.py": {
+      "maxDuration": 60,
+      "memory": 1024
+    }
+  },
+  "rewrites": [
+    { "src": "/api/(.*)", "dest": "/api/main.py" },
+    { "src": "/", "dest": "/api/main.py" }
+  ]
+}
+```
+
+## 🔧 Configuration
+
+### Environment Variables
+Create a `.env` file based on `env.example`:
+```bash
+# Database settings (if needed)
+DATABASE_URL=sqlite:///./court_accounts.db
+
+# API settings
+API_KEY=your_api_key_here
+DEBUG=True
+```
+
+### Scraper Configuration
+The scraper uses configuration from `config/scraper_config.json`:
+```json
+{
+  "scraper_settings": {
+    "force_rescrape": false,
+    "max_pages": 10,
+    "enable_logs": true
+  },
+  "request_settings": {
+    "timeout": 30,
+    "retry_attempts": 3,
+    "delay_between_requests": 2
+  }
+}
+```
+
+## 📱 Frontend Features
+
+### User Interface
+- **Scraping Controls**: Start scraping with configurable parameters
+- **Category Filter**: Real-time filtering of publications
+- **Status Display**: Live scraping status and progress
+- **Data Table**: Responsive table with publication details
+- **Modern Design**: Clean, professional appearance
+
+### Interactive Elements
+- **Start Scraping Button**: Initiates live web scraping
+- **Category Dropdown**: Filter publications by category
+- **Status Indicators**: Visual feedback for scraping operations
+- **Responsive Layout**: Works on all device sizes
+
+## 🛡️ Security & Best Practices
+
+- **CORS Configuration**: Properly configured for cross-origin requests
+- **Input Validation**: Pydantic models ensure data validation
+- **Error Handling**: Comprehensive error handling and user feedback
+- **Rate Limiting**: Built-in delays between scraping requests
 - **User-Agent Headers**: Proper browser identification
-- **Rate Limiting**: Built-in request throttling
-- **Error Handling**: Graceful handling of server errors
-- **Session Management**: Efficient connection reuse
+
+## 🔍 Troubleshooting
+
+### Common Issues
+
+#### 1. Frontend Styles Not Loading
+```bash
+# Ensure you're running from the root directory
+cd /path/to/scrap-cour-des-comptes-scraper
+uvicorn api.main:app --reload
+```
+
+#### 2. API Endpoints Returning 404
+- Check that the server is running with `uvicorn api.main:app`
+- Verify the API base URL in `public/js/app.js`
+- Clear browser cache and hard refresh
+
+#### 3. Scraping Not Working
+- Check the server logs for error messages
+- Verify the scraper service is properly imported
+- Check that the target website is accessible
+
+#### 4. Data Not Loading
+- Verify the JSON data file exists in `data/` directory
+- Check file permissions and encoding
+- Review the API response in browser developer tools
+
+### Debug Mode
+Enable debug logging by setting environment variables:
+```bash
+export DEBUG=True
+export LOG_LEVEL=DEBUG
+```
+
+## 📈 Performance
+
+### Optimization Features
+- **Static File Serving**: Efficient CSS/JS file delivery
+- **JSON Data Loading**: Fast data retrieval from local files
+- **Caching**: Browser-level caching for static assets
+- **Minimal Dependencies**: Lightweight, fast-loading application
+
+### Monitoring
+- **Health Checks**: `/health` endpoint for monitoring
+- **Status Endpoints**: Real-time scraping status
+- **Error Logging**: Comprehensive error tracking
+- **Performance Metrics**: Request timing and response sizes
 
 ## 🔮 Future Enhancements
 
-- **Database Integration**: Store data in SQL/NoSQL databases
-- **API Development**: RESTful API for data access
-- **Scheduling**: Automated periodic scraping
-- **Notifications**: Email/SMS alerts for new legislation
-- **Analytics**: Data analysis and reporting features
-- **Web Interface**: Web-based configuration and monitoring
-
-## 📊 Current Status
-
-- **✅ Core Functionality**: Complete and tested
-- **✅ Configuration System**: Fully implemented
-- **✅ Proxy Support**: Ready for production use
-- **✅ Logging System**: Comprehensive and configurable
-- **✅ Error Handling**: Robust and reliable
-- **✅ Package Structure**: Professional organization
-- **✅ Multiple Entry Points**: Flexible execution options
-- **✅ File Organization**: Clean data and config management
-- **✅ Rapport Section Extraction**: Fixed and fully functional
-- **✅ Dynamic Web Viewer**: Modern, responsive interface with real-time data loading
-- **✅ Enhanced PDF Visibility**: Contextual, prominent download buttons
-- **✅ Documentation**: Complete and up-to-date
+- **Database Integration**: SQL/NoSQL database storage
+- **User Authentication**: Secure access control
+- **Scheduled Scraping**: Automated periodic updates
+- **Email Notifications**: Alerts for new publications
+- **Advanced Analytics**: Data analysis and reporting
+- **Mobile App**: Native mobile application
+- **API Rate Limiting**: Advanced request throttling
+- **Webhook Support**: Real-time notifications
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
+3. **Make your changes** and test thoroughly
+4. **Commit your changes**: `git commit -m 'Add amazing feature'`
+5. **Push to the branch**: `git push origin feature/amazing-feature`
+6. **Submit a pull request**
+
+### Development Guidelines
+- Follow PEP 8 Python style guidelines
+- Add comprehensive error handling
+- Include docstrings for all functions
+- Test your changes locally before submitting
+- Update documentation as needed
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **FastAPI**: Modern, fast web framework for building APIs
+- **Vercel**: Serverless deployment platform
+- **Moroccan Court of Accounts**: Data source
+- **Open Source Community**: Contributors and maintainers
+
+## 📞 Support
+
+- **Issues**: Report bugs and feature requests on GitHub
+- **Discussions**: Join community discussions
+- **Documentation**: Check the `/docs` endpoint for API documentation
+- **Email**: Contact the development team
 
 ---
 
-**🎉 Ready for production use with comprehensive configuration management and professional package structure!**
+**🎉 Ready for production use with comprehensive web scraping, modern API, and beautiful frontend!**
+
+**Live Demo**: https://scrap-cour-des-comptes-scraper.vercel.app
+**API Docs**: https://scrap-cour-des-comptes-scraper.vercel.app/docs
