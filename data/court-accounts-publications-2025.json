@@ -1,0 +1,127 @@
+{
+  "scraped_at": "2025-08-10T22:08:12.892783",
+  "total_items": 2,
+  "source_website": "https://www.courdescomptes.ma/publications/",
+  "data_extraction_level": "Enhanced with publication details and PDF links",
+  "publication_categories": [
+    "Rapport thématique",
+    "Rapport particulier",
+    "Rapport annuel",
+    "Rapport partis politiques",
+    "Synthèses des missions CRC",
+    "Arrêt",
+    "Référé",
+    "Formulaire"
+  ],
+  "duplicate_checking": "Disabled",
+  "data": [
+    {
+      "title": "Rapport sur l’exécution de la loi de finances au titre de l’année 2023",
+      "date": "23 Juil. 2025",
+      "year": 2025,
+      "category": "Rapport annuel",
+      "description": "Conformément aux dispositions des articles 147 et 148 de la Constitution, la Cour des comptes est chargée d’assurer le contrôle supérieur de l’exécution des lois de finances. Elle assiste le Parlement dans les domaines de contrôle des finances publiques et répond aux questions et consultations en rapport avec les fonctions de législation, de contrôle et […]",
+      "pdf_url": "https://www.courdescomptes.ma/wp-content/uploads/2025/07/Rapport-sur-lexecution-de-la-loi-de-finances-au-titre-de-lannee-2023.pdf",
+      "pdf_filename": "Rapport-sur-lexecution-de-la-loi-de-finances-au-titre-de-lannee-2023.pdf",
+      "url": "https://www.courdescomptes.ma/publication/la-cour-des-comptes-publie-son-rapport-sur-lexecution-de-la-loi-de-finances-au-titre-de-lannee-2023/",
+      "scraped_at": "2025-08-10T22:08:12.763873",
+      "source_url": "https://www.courdescomptes.ma",
+      "author": "Cour des comptes",
+      "pdf_files": [
+        {
+          "url": "https://www.courdescomptes.ma/wp-content/uploads/2025/07/Rapport-sur-lexecution-de-la-loi-de-finances-au-titre-de-lannee-2023.pdf",
+          "filename": "Rapport-sur-lexecution-de-la-loi-de-finances-au-titre-de-lannee-2023.pdf",
+          "title": "Rapport sur l’exécution de la loi de finances au titre de l’année 2023",
+          "type": "pdf",
+          "language": "unknown",
+          "document_type": "main_report"
+        },
+        {
+          "url": "https://www.courdescomptes.ma/wp-content/uploads/2025/07/Synthese-du-rapport-sur-lexecution-de-la-loi-de-finances-au-titre-de-lannee-2023-FR.pdf",
+          "filename": "Synthese-du-rapport-sur-lexecution-de-la-loi-de-finances-au-titre-de-lannee-2023-FR.pdf",
+          "title": "Synthèse du rapport sur l’exécution de la loi de finances au titre de l’année 2023-FR",
+          "type": "pdf",
+          "language": "french",
+          "document_type": "synthesis"
+        }
+      ],
+      "additional_files": [],
+      "full_content": "",
+      "arabic_version_url": "https://www.courdescomptes.ma/ar/",
+      "language_versions": {
+        "arabic": {
+          "name": "العربية",
+          "url": "https://www.courdescomptes.ma/ar/"
+        },
+        "amazigh": {
+          "name": "ⵜⴰⵎⴰⵣⵉⵖⵜ",
+          "url": "https://www.courdescomptes.ma/am/"
+        },
+        "english": {
+          "name": "English",
+          "url": "https://www.courdescomptes.ma/en/"
+        }
+      },
+      "publication_details": {}
+    },
+    {
+      "title": "Rapport sur l’audit des comptes des Partis politiques au titre de l’année 2023",
+      "date": "27 Mai. 2025",
+      "year": 2025,
+      "category": "Rapport partis politiques",
+      "description": "Conformément aux dispositions de l’article 147 de la Constitution, de l’article 44 de la loi organique n° 29.11 relative aux partis politiques, ainsi que de l’article 3 de la loi n°62.99 formant Code des juridictions financières, la Cour des comptes a publié, en date du 27 mai 2025, son rapport relatif à l’audit des comptes […]",
+      "pdf_url": "https://www.courdescomptes.ma/wp-content/uploads/2025/05/Communique-de-presse_27_05_2025.pdf",
+      "pdf_filename": "Communique-de-presse_27_05_2025.pdf",
+      "url": "https://www.courdescomptes.ma/publication/%d8%a7%d9%84%d8%aa%d9%82%d8%b1%d9%8a%d8%b1-%d8%a7%d9%84%d9%85%d8%aa%d8%b9%d9%84%d9%82-%d8%a8%d8%aa%d8%af%d9%82%d9%8a%d9%82-%d8%ad%d8%b3%d8%a7%d8%a8%d8%a7%d8%aa-%d8%a7%d9%84%d8%a3%d8%ad%d8%b2%d8%a7-2/",
+      "scraped_at": "2025-08-10T22:08:12.826557",
+      "source_url": "https://www.courdescomptes.ma",
+      "author": "Cour des comptes",
+      "pdf_files": [
+        {
+          "url": "https://www.courdescomptes.ma/wp-content/uploads/2025/05/Communique-de-presse_27_05_2025.pdf",
+          "filename": "Communique-de-presse_27_05_2025.pdf",
+          "title": "Communiqué de presse_Publication du rapport sur l’audit des comptes des Partis politiques au titre de l’année 2023",
+          "type": "pdf",
+          "language": "arabic",
+          "document_type": "main_report"
+        },
+        {
+          "url": "https://www.courdescomptes.ma/wp-content/uploads/2025/05/Rapport-PP2023.pdf",
+          "filename": "Rapport-PP2023.pdf",
+          "title": "Rapport relatif à l’audit des comptes des Partis politiques au titre de l’année 2023_AR",
+          "type": "pdf",
+          "language": "arabic",
+          "document_type": "main_report"
+        },
+        {
+          "url": "https://www.courdescomptes.ma/wp-content/uploads/2025/05/Synthese-PP-FR.pdf",
+          "filename": "Synthese-PP-FR.pdf",
+          "title": "Synthèse du rapport relatif à l’audit des comptes des Partis politiques au titre de l’année 2023",
+          "type": "pdf",
+          "language": "arabic",
+          "document_type": "synthesis"
+        }
+      ],
+      "additional_files": [],
+      "full_content": "",
+      "arabic_version_url": "https://www.courdescomptes.ma/ar/",
+      "language_versions": {
+        "arabic": {
+          "name": "العربية",
+          "url": "https://www.courdescomptes.ma/ar/"
+        },
+        "amazigh": {
+          "name": "ⵜⴰⵎⴰⵣⵉⵖⵜ",
+          "url": "https://www.courdescomptes.ma/am/"
+        },
+        "english": {
+          "name": "English",
+          "url": "https://www.courdescomptes.ma/en/"
+        }
+      },
+      "publication_details": {
+        "extracted_date": "27 mai 2025"
+      }
+    }
+  ]
+}

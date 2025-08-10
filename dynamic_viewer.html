@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moroccan Court of Accounts Publications Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            margin: 0;
+            padding: 30px 20px;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin: 0 0 12px 0;
+            font-weight: 300;
+            color: white;
+        }
+
+        .header p {
+            margin: 0;
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .controls {
+            padding: 25px 40px;
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box, .filter-select {
+            padding: 12px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box:focus, .filter-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .publications-grid {
+            display: grid;
+            gap: 20px;
+            padding: 30px;
+        }
+
+        .publication-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 25px;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .publication-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .publication-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .publication-date {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .publication-category {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 500;
+            margin: 10px 0;
+        }
+
+        .publication-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid #667eea;
+            color: #667eea;
+        }
+
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.8em;
+        }
+
+        .publication-description {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            border-radius: 4px;
+            color: #495057;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .pdf-files-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+
+        .pdf-files-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .pdf-file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .pdf-file-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 2px 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .pdf-file-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .pdf-icon {
+            font-size: 1.2em;
+            color: #dc3545;
+        }
+
+        .pdf-details {
+            flex: 1;
+        }
+
+        .pdf-title {
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 4px;
+            font-size: 0.9em;
+        }
+
+        .pdf-filename {
+            font-size: 0.8em;
+            color: #6c757d;
+            font-family: monospace;
+        }
+
+        .publication-author {
+            margin: 10px 0;
+            padding: 10px 15px;
+            background: #e8f4fd;
+            border-left: 4px solid #007bff;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #495057;
+        }
+
+
+
+
+
+        .synthesis-file {
+            border-left: 4px solid #28a745;
+            background: #f8fff9;
+        }
+
+        .pdf-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .doc-type-badge {
+            background: #28a745;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            font-weight: 500;
+        }
+
+        .loading, .error, .empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .loading h3, .error h3, .empty h3 {
+            margin-bottom: 10px;
+            color: #495057;
+        }
+
+        .error {
+            color: #dc3545;
+        }
+
+        .error h3 {
+            color: #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 0;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .stats {
+                padding: 20px;
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                padding: 20px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                min-width: auto;
+            }
+            
+            .publications-grid {
+                padding: 20px;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .publication-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ Moroccan Court of Accounts</h1>
+            <p>Interactive viewer for current publications data</p>
+            <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.8;">
+                <span id="data-source-info">Loading...</span>
+            </p>
+        </div>
+
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="total-count">-</div>
+                <div class="stat-label">Total Publications</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="current-year">-</div>
+                <div class="stat-label">Current Year</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="categories-count">-</div>
+                <div class="stat-label">PDF Files</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <input type="text" id="search" class="search-box" placeholder="🔍 Search publications by title, category, or date...">
+            <select id="category-filter" class="filter-select">
+                <option value="">All Categories</option>
+            </select>
+            <button id="refresh-data" class="btn btn-outline" style="padding: 10px 15px;">
+                🔄 Refresh Data
+            </button>
+        </div>
+
+        <div class="publications-grid" id="publications-grid">
+            <div class="loading">
+                <h3>Loading publications data...</h3>
+                <p>Please wait while we fetch the latest data</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration for data source
+        let DATA_SOURCE = './data/court-accounts-publications-2025.json';
+
+        let publicationsData = [];
+        let filteredData = [];
+
+        // Load and display data
+        async function loadData() {
+            try {
+                showLoadingState();
+                
+                const response = await fetch(DATA_SOURCE);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
+                }
+                
+                const jsonData = await response.json();
+                publicationsData = jsonData.data || [];
+                
+                updateStats(jsonData);
+                updateDataSourceInfo(jsonData);
+                populateFilters();
+                filteredData = [...publicationsData];
+                renderPublications();
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showErrorState(error);
+            }
+        }
+
+        // Show loading state
+        function showLoadingState() {
+            document.getElementById('publications-grid').innerHTML = `
+                <div class="loading">
+                    <h3>Loading publications data...</h3>
+                    <p>Please wait while we fetch the latest data</p>
+                </div>
+            `;
+        }
+
+        // Show error state
+        function showErrorState(error) {
+            document.getElementById('publications-grid').innerHTML = `
+                <div class="error">
+                    <h3>Error loading data</h3>
+                    <p>Failed to load publications: ${error.message}</p>
+                    <button onclick="loadData()" class="btn btn-primary" style="margin-top: 15px;">
+                        🔄 Try Again
+                    </button>
+                </div>
+            `;
+        }
+
+        // Update stats display
+        function updateStats(jsonData) {
+            const currentYear = new Date().getFullYear();
+            const categories = [...new Set(publicationsData.map(item => item.category).filter(Boolean))];
+            const totalPdfFiles = publicationsData.reduce((sum, item) => sum + (item.pdf_files ? item.pdf_files.length : 0), 0);
+            
+            document.getElementById('total-count').textContent = publicationsData.length;
+            document.getElementById('current-year').textContent = currentYear;
+            document.getElementById('categories-count').textContent = totalPdfFiles;
+            
+            // Update the label for the third stat
+            const categoryLabel = document.querySelector('#categories-count').nextElementSibling;
+            if (categoryLabel) {
+                categoryLabel.textContent = 'PDF Files';
+            }
+        }
+
+        // Update data source info
+        function updateDataSourceInfo(jsonData) {
+            const fileName = DATA_SOURCE.split('/').pop();
+            const scrapedAt = jsonData.scraped_at ? new Date(jsonData.scraped_at).toLocaleString() : 'Unknown';
+            document.getElementById('data-source-info').innerHTML = 
+                `Data from <strong>${fileName}</strong> • Scraped: ${scrapedAt}`;
+        }
+
+        // Populate filter dropdowns
+        function populateFilters() {
+            const categoryFilter = document.getElementById('category-filter');
+            const categories = [...new Set(publicationsData.map(item => item.category).filter(Boolean))];
+            
+            // Clear existing options (except "All Categories")
+            categoryFilter.innerHTML = '<option value="">All Categories</option>';
+            
+            categories.sort().forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                categoryFilter.appendChild(option);
+            });
+        }
+
+        // Render publications
+        function renderPublications() {
+            const grid = document.getElementById('publications-grid');
+            
+            if (filteredData.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty">
+                        <h3>No publications found</h3>
+                        <p>Try adjusting your search or filter criteria</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const publicationsHtml = filteredData.map(createPublicationCard).join('');
+            grid.innerHTML = publicationsHtml;
+        }
+
+        // Create individual publication card
+        function createPublicationCard(item) {
+            const pdfFilesHtml = item.pdf_files && item.pdf_files.length > 0 
+                ? `<div class="pdf-files-section">
+                     <h4 style="margin: 15px 0 10px 0; color: #495057; font-size: 1em;">📁 Available Files (${item.pdf_files.length})</h4>
+                     <div class="pdf-files-grid">
+                       ${item.pdf_files.map(file => `
+                         <div class="pdf-file-item ${file.document_type === 'synthesis' ? 'synthesis-file' : ''}">
+                           <div class="pdf-file-info">
+                             <span class="pdf-icon">${file.document_type === 'synthesis' ? '📋' : '📄'}</span>
+                             <div class="pdf-details">
+                               <div class="pdf-title">${file.title}</div>
+                               <div class="pdf-meta">
+                                 <span class="pdf-filename">${file.filename}</span>
+                                 ${file.document_type === 'synthesis' ? '<span class="doc-type-badge">Synthèse</span>' : ''}
+                               </div>
+                             </div>
+                           </div>
+                           <a href="${file.url}" target="_blank" class="btn btn-outline btn-small">
+                             📥 Download
+                           </a>
+                         </div>
+                       `).join('')}
+                     </div>
+                   </div>`
+                : '';
+
+            const authorHtml = item.author 
+                ? `<div class="publication-author">👤 <strong>Author:</strong> ${item.author}</div>`
+                : '';
+
+            const descriptionHtml = item.description 
+                ? `<div class="publication-description">${item.description}</div>`
+                : '';
+
+            const languageVersionsHtml = '';
+
+            return `
+                <div class="publication-card">
+                    <div class="card-header">
+                        <h3 class="publication-title">${item.title || 'Untitled Publication'}</h3>
+                        <span class="publication-date">${item.date || 'No date'}</span>
+                    </div>
+                    
+                    ${item.category ? `<span class="publication-category">${item.category}</span>` : ''}
+                    ${authorHtml}
+                    ${descriptionHtml}
+                    ${languageVersionsHtml}
+                    ${pdfFilesHtml}
+                    
+                    <div class="publication-actions">
+                        ${item.url ? `<a href="${item.url}" target="_blank" class="btn btn-primary">📄 View Details</a>` : ''}
+                        <button onclick="copyLink('${item.url || ''}')" class="btn btn-outline">🔗 Copy Link</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Copy link to clipboard
+        function copyLink(url) {
+            if (!url) return;
+            navigator.clipboard.writeText(url).then(() => {
+                // Simple feedback - you could enhance this with a toast notification
+                console.log('Link copied to clipboard');
+            });
+        }
+
+        // Search and filter functionality
+        function applyFilters() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const categoryFilter = document.getElementById('category-filter').value;
+
+            filteredData = publicationsData.filter(item => {
+                const matchesSearch = !searchTerm || 
+                    (item.title && item.title.toLowerCase().includes(searchTerm)) ||
+                    (item.category && item.category.toLowerCase().includes(searchTerm)) ||
+                    (item.date && item.date.toLowerCase().includes(searchTerm));
+
+                const matchesCategory = !categoryFilter || item.category === categoryFilter;
+
+                return matchesSearch && matchesCategory;
+            });
+
+            renderPublications();
+        }
+
+        // Event listeners
+        document.getElementById('search').addEventListener('input', applyFilters);
+        document.getElementById('category-filter').addEventListener('change', applyFilters);
+        document.getElementById('refresh-data').addEventListener('click', loadData);
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', loadData);
+    </script>
+</body>
+</html>

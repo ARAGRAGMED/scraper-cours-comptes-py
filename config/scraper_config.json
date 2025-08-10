@@ -1,0 +1,26 @@
+{
+  "scraper_settings": {
+    "force_rescrape": true,
+    "enable_logs": true,
+    "save_format": "json"
+  },
+  "proxy_settings": {
+    "enable_proxies": false,
+    "proxies": [],
+    "proxy_rotation": true,
+    "proxy_timeout": 10
+  },
+  "request_settings": {
+    "timeout": 30,
+    "retry_attempts": 3,
+    "delay_between_requests": 2,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+  },
+  "logging_settings": {
+          "log_level": "INFO",
+    "show_progress": true,
+    "show_detailed_extraction": true,
+    "show_commission_checks": true,
+    "show_ministry_checks": true
+  }
+}

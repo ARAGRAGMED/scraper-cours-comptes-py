@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moroccan Court of Accounts Scraper</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏛️ Moroccan Court of Accounts Scraper</h1>
+            <p>Extract and analyze publications from the Court of Accounts website</p>
+        </header>
+
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-links">
+                    <a href="#scraping" class="nav-link">🚀 Scraping</a>
+                    <a href="#publications" class="nav-link">📊 Publications</a>
+                </div>
+                <div class="nav-external">
+                    <a href="/api/docs" target="_blank" class="nav-link">📚 API Docs</a>
+                    <a href="/api/redoc" target="_blank" class="nav-link">📖 ReDoc</a>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            <!-- Scraping Control Section -->
+            <section id="scraping" class="scraping-controls">
+                <h2>Scraping Controls</h2>
+                <div class="control-panel">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="maxPages">Max Pages:</label>
+                            <input type="number" id="maxPages" value="10" min="1" max="50">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="forceRescrape">
+                                <input type="checkbox" id="forceRescrape">
+                                Force Re-scrape
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button id="startScraping" class="btn btn-primary">🚀 Start Scraping</button>
+                        <button id="stopScraping" class="btn btn-danger" disabled>⏹️ Stop Scraping</button>
+                        <button id="checkStatus" class="btn btn-info">📊 Check Status</button>
+                    </div>
+                </div>
+                
+                <div id="scrapingStatus" class="status-panel hidden">
+                    <h3>Scraping Status</h3>
+                    <div id="statusContent"></div>
+                </div>
+            </section>
+
+            <!-- Publications Display Section -->
+            <section id="publications" class="publications-display">
+                <h2>Publications</h2>
+                
+                <div class="data-controls">
+                    <div class="form-group">
+                        <label for="categoryFilter">Filter Publications by Category:</label>
+                        <select id="categoryFilter">
+                            <option value="">All Categories</option>
+                        </select>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button id="loadData" class="btn btn-secondary">📥 Load Data</button>
+                    </div>
+                </div>
+                
+                <div id="publicationsList" class="publications-list">
+                    <div class="loading-message">Click "Load Data" to view publications</div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Powered by FastAPI • Deployed on Vercel</p>
+        </footer>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
