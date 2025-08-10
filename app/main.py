@@ -55,12 +55,6 @@ async def favicon():
     """Serve favicon"""
     return FileResponse("public/favicon.ico")
 
-# Health check endpoint
-@app.get("/health")
-async def health_check():
-    """Health check endpoint"""
-    return {"status": "healthy", "service": "Court of Accounts Scraper API"}
-
 # For local development
 if __name__ == "__main__":
     import uvicorn
