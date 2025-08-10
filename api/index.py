@@ -3,15 +3,23 @@
 Vercel serverless function entry point
 """
 
-import sys
-from pathlib import Path
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 
-# Add the app directory to the Python path
-app_path = Path(__file__).parent.parent / "app"
-sys.path.insert(0, str(app_path))
+# Create a minimal FastAPI app for testing
+app = FastAPI(title="Court Accounts Scraper API")
 
-# Import the FastAPI app
-from main import app
+@app.get("/")
+async def root():
+    return {"message": "Court Accounts Scraper API is running!"}
+
+@app.get("/health")
+async def health():
+    return {"status": "healthy", "service": "Court Accounts Scraper API"}
+
+@app.get("/test")
+async def test():
+    return {"message": "Test endpoint working!"}
 
 # Export the app for Vercel
 handler = app
