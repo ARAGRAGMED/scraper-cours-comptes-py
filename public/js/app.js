@@ -2,7 +2,7 @@
 
 class CourtAccountsScraper {
     constructor() {
-        this.apiBase = '/api/v1';
+        this.apiBase = '/api';
         this.currentStatus = null;
         this.init();
     }
@@ -121,7 +121,7 @@ class CourtAccountsScraper {
             let url = '/court-accounts/publications';
             
             if (category) {
-                url = `/court-accounts/publications/category/${encodeURIComponent(category)}`;
+                url = `/court-accounts/publications?category=${encodeURIComponent(category)}`;
             }
             
             const response = await this.makeRequest(url);

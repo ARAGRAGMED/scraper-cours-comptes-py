@@ -8,21 +8,30 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 import os
+import sys
 from pathlib import Path
+
+# Add the current directory to Python path for local development
+current_dir = Path(__file__).parent
+sys.path.insert(0, str(current_dir))
 
 # Import routers with flexible imports for different environments
 try:
-    # Try package imports first (for Vercel)
-    from api.routes import court_accounts
-except ImportError:
+    # Try relative imports (for local development)
+    from routes import court_accounts
+    print("✅ Successfully imported court_accounts from routes")
+except ImportError as e:
+    print(f"❌ Error importing from routes: {e}")
     try:
-        # Try relative imports (for local development)
-        from routes import court_accounts
-    except ImportError:
-        # Fallback to direct imports
-        import sys
-        sys.path.append(os.path.dirname(__file__))
-        from routes import court_accounts
+        # Try package imports (for Vercel)
+        from api.routes import court_accounts
+        print("✅ Successfully imported court_accounts from api.routes")
+    except ImportError as e2:
+        print(f"❌ Error importing from api.routes: {e2}")
+        # Create a minimal router for testing
+        from fastapi import APIRouter
+        court_accounts = APIRouter()
+        print("⚠️ Using fallback router")
 
 # Create FastAPI app
 app = FastAPI(
@@ -40,15 +49,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Mount static files (CSS, JS, images)
+public_dir = Path(__file__).parent.parent / "public"
+app.mount("/css", StaticFiles(directory=str(public_dir / "css")), "css")
+app.mount("/js", StaticFiles(directory=str(public_dir / "js")), "js")
+
 # Include API routers
 app.include_router(court_accounts.router, prefix="/api")
+print(f"✅ Router included: {court_accounts.router}")
 
 # Root endpoint for the main page (serves the frontend directly)
 @app.get("/")
 async def main_page():
     """Main page endpoint - serves the frontend directly"""
     # Read the HTML file from public directory
-    public_dir = Path(__file__).parent.parent / "public"
     html_file = public_dir / "index.html"
     
     if html_file.exists():

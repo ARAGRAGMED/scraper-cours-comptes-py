@@ -76,25 +76,25 @@ vercel --prod
 After deployment, your API will be available at:
 
 - **Base URL**: `https://your-project.vercel.app/api/v1`
-- **Documentation**: `https://your-project.vercel.app/api/docs`
+- **Documentation**: `https://your-project.vercel.app/docs/`
 - **Frontend**: `https://your-project.vercel.app`
 
 ### Available Endpoints
 
 #### Public Endpoints (No API Key Required)
-- `GET /api/v1/court-accounts/status` - Get scraper status
-- `GET /api/v1/court-accounts/publications` - Get publications
-- `GET /api/v1/court-accounts/categories` - Get available categories
-- `GET /api/v1/data/stats` - Get data statistics
-- `GET /api/v1/data/years` - Get available years
+- `GET /api/court-accounts/status` - Get scraper status
+- `GET /api/court-accounts/publications` - Get publications
+- `GET /api/court-accounts/categories` - Get available categories
+- `GET /api/data/stats` - Get data statistics
+- `GET /api/data/years` - Get available years
 
 #### Protected Endpoints (API Key Required)
-- `POST /api/v1/court-accounts/scrape` - Start scraping
-- `POST /api/v1/court-accounts/stop` - Stop scraping
-- `GET /api/v1/config/` - View configuration
-- `PUT /api/v1/config/` - Update configuration
-- `GET /api/v1/config/validate` - Validate configuration
-- `GET /api/v1/config/reset` - Reset configuration
+- `POST /api/court-accounts/scrape` - Start scraping
+- `POST /api/court-accounts/stop` - Stop scraping
+- `GET /api/config/` - View configuration
+- `PUT /api/config/` - Update configuration
+- `GET /api/config/validate` - Validate configuration
+- `GET /api/config/reset` - Reset configuration
 
 ## Usage
 
@@ -109,13 +109,13 @@ Set the `API_KEY` environment variable in Vercel dashboard.
 ### 3. Use the API Directly
 ```bash
 # Example: Start scraping
-curl -X POST "https://your-project.vercel.app/api/v1/court-accounts/scrape" \
+curl -X POST "https://your-project.vercel.app/api/court-accounts/scrape" \
   -H "Authorization: Bearer your_api_key" \
   -H "Content-Type: application/json" \
   -d '{"category_filter": "Rapport thématique", "max_pages": 5}'
 
 # Example: Get publications
-curl "https://your-project.vercel.app/api/v1/court-accounts/publications?year=2023"
+curl "https://your-project.vercel.app/api/court-accounts/publications?year=2023"
 ```
 
 ## Troubleshooting

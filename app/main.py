@@ -25,7 +25,7 @@ app = FastAPI(
     title="Moroccan Court of Accounts Scraper API",
     description="API for scraping and retrieving Court of Accounts publications",
     version="1.0.0",
-    docs_url="/api/docs",
+    docs_url="/docs/",
     redoc_url="/api/redoc"
 )
 

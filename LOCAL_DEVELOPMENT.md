@@ -51,7 +51,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ### 2. Access the Application
-- **API Documentation**: http://localhost:8000/api/docs
+- **API Documentation**: http://localhost:8000/docs/
 - **Frontend**: http://localhost:8000
 - **API Base**: http://localhost:8000/api/v1
 
@@ -68,17 +68,17 @@ You can test the API using:
 #### cURL
 ```bash
 # Test public endpoint
-curl http://localhost:8000/api/v1/court-accounts/status
+curl http://localhost:8000/api/court-accounts/status
 
 # Test protected endpoint
-curl -X POST http://localhost:8000/api/v1/court-accounts/scrape \
+curl -X POST http://localhost:8000/api/court-accounts/scrape \
   -H "Authorization: Bearer your_local_api_key_here" \
   -H "Content-Type: application/json" \
   -d '{"category_filter": "Rapport thématique", "max_pages": 2}'
 ```
 
 #### FastAPI Interactive Docs
-- Visit http://localhost:8000/api/docs
+- Visit http://localhost:8000/docs/
 - Use the interactive interface to test endpoints
 - Set your API key in the Authorize button
 
@@ -87,13 +87,13 @@ curl -X POST http://localhost:8000/api/v1/court-accounts/scrape \
 import requests
 
 # Test public endpoint
-response = requests.get('http://localhost:8000/api/v1/court-accounts/status')
+response = requests.get('http://localhost:8000/api/court-accounts/status')
 print(response.json())
 
 # Test protected endpoint
 headers = {'Authorization': 'Bearer your_local_api_key_here'}
 data = {'category_filter': 'Rapport thématique', 'max_pages': 2}
-response = requests.post('http://localhost:8000/api/v1/court-accounts/scrape', 
+response = requests.post('http://localhost:8000/api/court-accounts/scrape', 
                         json=data, headers=headers)
 print(response.json())
 ```
