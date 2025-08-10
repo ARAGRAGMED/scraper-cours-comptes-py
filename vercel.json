@@ -6,7 +6,6 @@
     }
   },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/main.py" },
-    { "source": "/", "destination": "/api/main.py" }
+    { "source": "/(.*)", "destination": "/api/main.py" }
   ]
 }

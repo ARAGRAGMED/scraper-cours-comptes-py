@@ -12,15 +12,18 @@ import os
 
 router = APIRouter()
 
-# Add the app directory to Python path for importing services
-app_path = Path(__file__).parent.parent.parent / "app"
-sys.path.insert(0, str(app_path))
+# Simplified path handling for Vercel
+def get_project_root():
+    """Get the project root directory"""
+    current_file = Path(__file__)
+    # Navigate up from api/routes to project root
+    return current_file.parent.parent.parent
 
 def load_publications_data():
     """Load publications data from JSON file"""
     try:
-        # Get the path to the data file relative to the project root
-        data_file = Path(__file__).parent.parent.parent / "data" / "court-accounts-publications-2025.json"
+        project_root = get_project_root()
+        data_file = project_root / "data" / "court-accounts-publications-2025.json"
         
         if not data_file.exists():
             print(f"⚠️ Data file not found: {data_file}")
@@ -41,7 +44,14 @@ def load_publications_data():
 async def get_scraper_service():
     """Get the Court of Accounts scraper service"""
     try:
-        from services.court_accounts_service import CourtAccountsService
+        project_root = get_project_root()
+        app_services_path = project_root / "app" / "services"
+        
+        # Add the app services path to Python path
+        if str(app_services_path) not in sys.path:
+            sys.path.insert(0, str(app_services_path))
+        
+        from court_accounts_service import CourtAccountsService
         return CourtAccountsService()
     except ImportError as e:
         print(f"❌ Error importing CourtAccountsService: {e}")

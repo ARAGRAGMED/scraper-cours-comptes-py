@@ -15,23 +15,16 @@ from pathlib import Path
 current_dir = Path(__file__).parent
 sys.path.insert(0, str(current_dir))
 
-# Import routers with flexible imports for different environments
+# Import the court_accounts router
 try:
-    # Try relative imports (for local development)
     from routes import court_accounts
     print("✅ Successfully imported court_accounts from routes")
 except ImportError as e:
     print(f"❌ Error importing from routes: {e}")
-    try:
-        # Try package imports (for Vercel)
-        from api.routes import court_accounts
-        print("✅ Successfully imported court_accounts from api.routes")
-    except ImportError as e2:
-        print(f"❌ Error importing from api.routes: {e2}")
-        # Create a minimal router for testing
-        from fastapi import APIRouter
-        court_accounts = APIRouter()
-        print("⚠️ Using fallback router")
+    # Create a minimal router for testing
+    from fastapi import APIRouter
+    court_accounts = APIRouter()
+    print("⚠️ Using fallback router")
 
 # Create FastAPI app
 app = FastAPI(
