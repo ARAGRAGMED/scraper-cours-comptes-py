@@ -37,7 +37,10 @@ except ImportError as e:
 app = FastAPI(
     title="Moroccan Court of Accounts Scraper API",
     description="API for scraping and retrieving Court of Accounts publications",
-    version="1.0.0"
+    version="1.0.0",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json"
 )
 
 # Add CORS middleware
@@ -83,3 +86,34 @@ async def health_check():
 async def test():
     """Test endpoint"""
     return {"message": "Test endpoint working!"}
+
+# Docs redirect endpoint
+@app.get("/docs")
+async def docs_redirect():
+    """Redirect to FastAPI docs"""
+    from fastapi.responses import RedirectResponse
+    return RedirectResponse(url="/docs")
+
+# API info endpoint
+@app.get("/api")
+async def api_info():
+    """API information and available endpoints"""
+    return {
+        "title": "Moroccan Court of Accounts Scraper API",
+        "version": "1.0.0",
+        "description": "API for scraping and retrieving Court of Accounts publications",
+        "endpoints": {
+            "docs": "/docs",
+            "redoc": "/redoc",
+            "openapi": "/openapi.json",
+            "health": "/health",
+            "test": "/test",
+            "api": "/api",
+            "court_accounts": {
+                "publications": "/api/court-accounts/publications",
+                "categories": "/api/court-accounts/categories",
+                "scrape": "/api/court-accounts/scrape",
+                "status": "/api/court-accounts/status"
+            }
+        }
+    }
