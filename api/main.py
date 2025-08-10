@@ -87,12 +87,65 @@ async def test():
     """Test endpoint"""
     return {"message": "Test endpoint working!"}
 
-# Docs redirect endpoint
+# Docs endpoint - serves FastAPI documentation
 @app.get("/docs")
-async def docs_redirect():
-    """Redirect to FastAPI docs"""
-    from fastapi.responses import RedirectResponse
-    return RedirectResponse(url="/docs")
+async def docs_page():
+    """Serve FastAPI documentation page"""
+    from fastapi.responses import HTMLResponse
+    docs_html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>API Documentation - Moroccan Court of Accounts Scraper</title>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui.css" />
+    </head>
+    <body>
+        <div id="swagger-ui"></div>
+        <script src="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-bundle.js"></script>
+        <script>
+            window.onload = function() {
+                const ui = SwaggerUIBundle({
+                    url: '/openapi.json',
+                    dom_id: '#swagger-ui',
+                    presets: [
+                        SwaggerUIBundle.presets.apis,
+                        SwaggerUIBundle.SwaggerUIStandalonePreset
+                    ],
+                    layout: "BaseLayout"
+                });
+            };
+        </script>
+    </body>
+    </html>
+    """
+    return HTMLResponse(content=docs_html)
+
+# ReDoc endpoint - serves alternative API documentation
+@app.get("/redoc")
+async def redoc_page():
+    """Serve ReDoc documentation page"""
+    from fastapi.responses import HTMLResponse
+    redoc_html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>API Documentation - Moroccan Court of Accounts Scraper</title>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+        <style>
+            body { margin: 0; padding: 20px; }
+        </style>
+    </head>
+    <body>
+        <redoc spec-url="/openapi.json"></redoc>
+        <script src="https://unpkg.com/redoc@next/bundles/redoc.standalone.js"></script>
+    </body>
+    </html>
+    """
+    return HTMLResponse(content=redoc_html)
 
 # API info endpoint
 @app.get("/api")
